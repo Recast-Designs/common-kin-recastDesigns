@@ -6,13 +6,13 @@ import { getAnalytics, isSupported } from "firebase/analytics";
 // Your web app's Firebase configuration is read from environment variables
 // defined in .env.local (see below for the required keys)
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyChWr-TD6cMeKiSNU1zlhwXoX8h3ci3XI8",
+  authDomain: "common-kin.firebaseapp.com",
+  projectId: "common-kin",
+  storageBucket: "common-kin.firebasestorage.app",
+  messagingSenderId: "822414671990",
+  appId: "1:822414671990:web:cf2bf044e626aad9ac5f57",
+  measurementId: "G-FJEBRE8XHH",
 };
 
 // Initialize Firebase (guard against re-initializing on hot reload / SSR)
