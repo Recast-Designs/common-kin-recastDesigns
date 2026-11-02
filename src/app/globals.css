@@ -376,11 +376,13 @@ body {
 .ckl-variant.is-selected .ckl-variant__card {
   border-color: var(--ckl-ink);
 }
-/* Colour photo sits inside the card with some padding, as in the design */
+/* Colour photo sits inside the card with some padding, as in the design.
+   Use definite height/width (not max-*): iOS Safari fails to apply max-height
+   to an <img> flex item, letting it overflow the card. */
 .ckl-variant__card img {
   display: block;
-  max-height: 100%;
-  max-width: 100%;
+  height: 100%;
+  width: 100%;
   object-fit: contain;
 }
 
@@ -586,7 +588,18 @@ body {
 }
 
 .ckl-intro__video {
+  position: relative;
   aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+/* Fill the aspect-ratio box with absolute positioning instead of height:100%.
+   iOS Safari doesn't treat an aspect-ratio-derived height as "definite", so a
+   percentage height on the video collapses to 0 and the video disappears. */
+.ckl-intro__video .ckl-video {
+  position: absolute;
+  inset: 0;
+  height: 100%;
   width: 100%;
 }
 
