@@ -90,9 +90,14 @@
   --ckl-gallery: #f2f1ed;
   --ckl-card: #ecebe6;
   --ckl-red: #e20000;
-  --ckl-header-h: 56px;
+  --ckl-header-h: 55px;
   --ckl-gutter: clamp(16px, 5.4vw, 100px);
   --ckl-h1: clamp(56px, 8.4vw, 140px);
+  /* One Figma pixel. The desktop design (third column, "The Fold") is
+     1670px wide: at 1670px and wider every spacing below is the exact Figma
+     value; narrower desktop screens scale it down proportionally.
+     Usage: calc(<figma px> * var(--ckl-u)) */
+  --ckl-u: min(1px, calc(100vw / 1670));
   /* Colour of the radial shadow over the blueprint (matches the page) */
   --ckl-shadow: 255, 255, 255;
 }
@@ -142,6 +147,8 @@ body {
 
 .ckl-h1 {
   font-size: var(--ckl-h1);
+  /* 146px line box for the 140px headings, as in the Figma text layers */
+  line-height: 1.043;
   white-space: pre-line;
 }
 
@@ -212,7 +219,10 @@ body {
   height: var(--ckl-header-h);
   align-items: center;
   justify-content: space-between;
-  padding-inline: clamp(16px, 1.6vw, 26px);
+  /* Logo 20px from the left edge, icons ~20px from the right (the 40px
+     icon buttons carry 9px of their own padding) */
+  padding-left: clamp(16px, 1.2vw, 20px);
+  padding-right: clamp(8px, 0.66vw, 11px);
   background: var(--ckl-page);
   color: var(--ckl-ink);
   font-family: var(--ckl-font-body);
@@ -331,14 +341,79 @@ body {
   gap: 28px;
 }
 
+/* Buy panel blocks (phones/tablets keep the even 28px rhythm above) */
+.ckl-buy__head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ckl-buy__rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 @media (min-width: 1024px) {
+  /* Figma: photo 9px from the left edge, 9px gap, panel 12px from the right */
   .ckl-hero {
-    grid-template-columns: minmax(0, 1073fr) minmax(420px, 576fr);
+    grid-template-columns: minmax(0, 1064fr) minmax(420px, 576fr);
+    gap: calc(9 * var(--ckl-u));
     min-height: calc(100svh - var(--ckl-header-h));
+    padding-left: calc(9 * var(--ckl-u));
+    padding-right: calc(12 * var(--ckl-u));
   }
   /* Height comes from the row (at least one screen tall) */
   .ckl-hero__gallery {
     aspect-ratio: auto;
+  }
+
+  /* Panel: content 38px from the top, 39px from the left, CTA ends 100px
+     above the bottom of the panel */
+  .ckl-hero__panel {
+    padding: calc(38 * var(--ckl-u)) calc(34 * var(--ckl-u)) calc(100 * var(--ckl-u))
+      calc(39 * var(--ckl-u));
+  }
+
+  /* Vertical rhythm of the panel, measured from the Figma layers */
+  .ckl-hero__panel-inner {
+    max-width: 515px;
+    gap: 0;
+  }
+  .ckl-buy__head {
+    gap: 0;
+  }
+  .ckl-buy__title {
+    line-height: 1.033; /* 31px box */
+  }
+  .ckl-buy__head .ckl-price {
+    margin-top: calc(11 * var(--ckl-u));
+    line-height: 1.05; /* 21px box */
+  }
+  .ckl-buy__rating {
+    margin-top: calc(32 * var(--ckl-u));
+  }
+  .ckl-hero__panel-inner > .ckl-lead {
+    margin-top: calc(44 * var(--ckl-u));
+    line-height: 25px;
+  }
+  .ckl-hero__panel-inner > .ckl-variants {
+    margin-top: calc(21 * var(--ckl-u));
+  }
+  .ckl-hero__panel-inner > .ckl-buy__incense {
+    margin-top: calc(28 * var(--ckl-u));
+  }
+  .ckl-hero__panel-inner > .ckl-specs {
+    max-width: 492px;
+    margin-top: calc(82 * var(--ckl-u));
+  }
+  .ckl-hero__panel-inner > .ckl-buy__note {
+    margin-top: calc(31 * var(--ckl-u));
+    line-height: 20px;
+  }
+  .ckl-hero__panel-inner > .ckl-cta {
+    max-width: 503px;
+    margin-top: calc(47 * var(--ckl-u));
   }
 }
 
@@ -353,7 +428,7 @@ body {
   display: flex;
   width: 160px;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   text-align: left;
 }
 
@@ -430,7 +505,7 @@ body {
 .ckl-variant__name {
   overflow: hidden;
   font-size: 12px;
-  line-height: 1.2;
+  line-height: 16px;
   letter-spacing: -0.03em;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -463,22 +538,24 @@ body {
   border-bottom: 1px solid var(--ckl-ink);
 }
 
+/* Figma: rows 66–67px apart, text 26px under each rule, label 9px in,
+   value right-aligned 17px from the end of the rule */
 .ckl-specs__row {
   display: flex;
-  min-height: 66px;
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
+  min-height: 66.67px;
   border-top: 1px solid var(--ckl-ink);
-  padding: 25px 17px 16px 9px;
+  padding: 25px 17px 21px 9px;
   font-size: 14px;
-  line-height: 1;
+  line-height: 19px;
   letter-spacing: -0.01em;
 }
 
 .ckl-specs__row dd {
-  max-width: 200px;
-  text-align: left;
+  max-width: 220px;
+  text-align: right;
 }
 
 /* Add to cart */
@@ -609,19 +686,43 @@ body {
   order: -1;
 }
 
+/* Desktop, matched to Figma: video starts 55px under the hero, the heading
+   sits 260px below the top of the video, and the stories start 278px
+   below the video. The stage is sized to that content and pins while the
+   ::after spacer scrolls past (the same hold as the old 208vh section). */
 @media (min-width: 1024px) {
+  .ckl-pin--intro {
+    height: auto;
+  }
+  .ckl-pin--intro::after {
+    content: "";
+    display: block;
+    height: 108vh;
+  }
+  .ckl-pin--intro .ckl-pin__stage {
+    height: auto;
+  }
   .ckl-intro {
-    align-items: flex-start;
+    display: block;
+    padding: calc(55 * var(--ckl-u)) 0 calc(278 * var(--ckl-u));
   }
   .ckl-intro__video {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: min(83.4%, calc((100svh - var(--ckl-header-h)) * 0.9 * 16 / 9));
-    transform: translateY(-50%);
+    aspect-ratio: 1392 / 817;
+    width: min(83.4%, calc((100svh - var(--ckl-header-h) - 55 * var(--ckl-u) - 24px) * 1392 / 817));
+    margin-left: auto;
   }
   .ckl-intro__copy {
+    position: absolute;
+    top: calc((55 + 260) * var(--ckl-u));
+    left: calc(94 * var(--ckl-u));
     order: 0;
+  }
+  .ckl-intro__copy .ckl-h1 {
+    width: max-content;
+  }
+  .ckl-intro__copy .ckl-copy {
+    margin-top: calc(20 * var(--ckl-u));
+    margin-left: calc(12 * var(--ckl-u));
   }
 }
 
@@ -764,14 +865,72 @@ body {
   }
   /* Portrait video: as tall as the screen, centred in the left column */
   .ckl-stories__sticky .ckl-video {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-    object-position: 50% 50%;
-  }
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  object-position: 50% 50%;
+  transform: scale(1.80);        /* 1.25 = 25% bigger */
+  transform-origin: 50% 100%;    /* grows upward, the holder stays at the bottom */
+}
+  /* Text column: headings & photos end 82px from the right edge, body
+     copy 94px; the first heading starts 16px below the top of the smoke */
   .ckl-stories__list {
-    padding-left: 24px;
-    padding-right: clamp(24px, 5.3vw, 88px);
+    padding: calc(16 * var(--ckl-u)) calc(82 * var(--ckl-u)) 0 24px;
+  }
+  .ckl-story {
+    min-height: 0;
+    justify-content: flex-start;
+    padding-block: 0;
+  }
+  .ckl-story .ckl-copy {
+    width: max(100%, calc(515 * var(--ckl-u)));
+    max-width: none;
+    margin-left: 0; /* let flex-end alignment push any overflow to the left */
+    margin-right: calc(12 * var(--ckl-u));
+  }
+  /* Gaps between the stories */
+  .ckl-story:nth-child(2) {
+    margin-top: calc(327 * var(--ckl-u));
+  }
+  .ckl-story:nth-child(n + 3) {
+    margin-top: calc(376 * var(--ckl-u));
+  }
+  /* 1 — Intentional: sits 43px further in, heading → copy 28px */
+  .ckl-story:nth-child(1) {
+    margin-right: calc(43 * var(--ckl-u));
+  }
+  .ckl-story:nth-child(1) .ckl-copy {
+    margin-top: calc(28 * var(--ckl-u));
+    margin-right: 0;
+  }
+  /* 2 — Enduring: photos → heading 22px, heading → copy 22px */
+  .ckl-story:nth-child(2) .ckl-copy {
+    width: max(100%, calc(533 * var(--ckl-u)));
+    margin-top: calc(22 * var(--ckl-u));
+  }
+  /* 3 — Ritualistic: photo → heading 53px, heading → copy 12px */
+  .ckl-story:nth-child(n + 3) .ckl-copy {
+    margin-top: calc(12 * var(--ckl-u));
+  }
+
+  /* Photos may run past the text column into the smoke column, as in Figma */
+  .ckl-story__images {
+    max-width: none;
+  }
+  .ckl-story__images--2 {
+    width: calc(658 * var(--ckl-u));
+    grid-template-columns: minmax(0, 325fr) minmax(0, 318fr);
+    gap: calc(15 * var(--ckl-u));
+    margin-bottom: calc(22 * var(--ckl-u));
+  }
+  .ckl-story__images--2 img:nth-child(2) {
+    aspect-ratio: 318 / 568;
+    margin-top: calc(110 * var(--ckl-u));
+  }
+  .ckl-story__images--1 {
+    width: calc(590 * var(--ckl-u));
+    margin-right: calc(8 * var(--ckl-u));
+    margin-bottom: calc(53 * var(--ckl-u));
   }
 }
 
@@ -853,6 +1012,54 @@ body {
   white-space: pre-line;
 }
 
+.ckl-review__by {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ckl-review__rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Desktop, matched to Figma: cards start 154px under the last story and
+   77px from the left edge, 16px apart; the quote is centred in the space
+   above the name, name 49px in, stars 61px above the bottom of the card */
+@media (min-width: 1024px) {
+  .ckl-reviews {
+    padding-top: max(16px, calc(154 * var(--ckl-u) - 84px));
+    padding-bottom: 0;
+  }
+  .ckl-reviews__head {
+    padding-inline: calc(77 * var(--ckl-u));
+  }
+  .ckl-reviews__track {
+    gap: calc(16 * var(--ckl-u));
+    scroll-padding-inline: calc(77 * var(--ckl-u));
+    padding-inline: calc(77 * var(--ckl-u));
+  }
+  .ckl-review {
+    flex-basis: calc(505 * var(--ckl-u));
+    justify-content: flex-start;
+    padding: calc(92 * var(--ckl-u)) calc(46 * var(--ckl-u)) calc(61 * var(--ckl-u))
+      calc(49 * var(--ckl-u));
+  }
+  /* Larger quotes, as in the Figma cards (36px lines) */
+  .ckl-review__text {
+    margin-block: auto;
+    font-size: clamp(18px, 1.8vw, 30px);
+    line-height: 1.2;
+  }
+  .ckl-review__by {
+    gap: 17px;
+  }
+  .ckl-review__by .ckl-h3 {
+    line-height: 1.033; /* 31px box */
+  }
+}
+
 /* Stars */
 .ckl-stars {
   display: inline-flex;
@@ -896,9 +1103,35 @@ body {
   filter: drop-shadow(0 4px 36px rgba(0, 0, 0, 0.2));
 }
 
+/* Desktop, matched to Figma: photo starts 128px under the review cards and
+   bleeds 49px off the left edge (855px wide); heading starts 70px below the
+   top of the photo and ends 89px from the right, copy 9px under it */
 @media (min-width: 1024px) {
   .ckl-origin {
-    grid-template-columns: minmax(0, 855fr) minmax(0, 650fr);
+    grid-template-columns: minmax(0, 806fr) minmax(0, 864fr);
+    align-items: start;
+    gap: 0;
+    padding: calc(124 * var(--ckl-u)) calc(89 * var(--ckl-u)) 0 0;
+  }
+  .ckl-origin__image {
+    width: calc(855 * var(--ckl-u));
+    max-width: none;
+    max-height: none;
+    margin-left: calc(-49 * var(--ckl-u));
+  }
+  .ckl-origin__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-top: calc(70 * var(--ckl-u));
+  }
+  .ckl-origin__copy .ckl-h1 {
+    width: max-content;
+  }
+  .ckl-origin__copy .ckl-copy {
+    max-width: 546px;
+    margin-top: calc(9 * var(--ckl-u));
+    margin-right: calc(5 * var(--ckl-u));
   }
 }
 
@@ -915,12 +1148,38 @@ body {
   width: 100%;
 }
 
+/* Desktop, matched to Figma: drawing starts 87px under the origin photo,
+   86px / 99px side margins, heading 103px below the top of the drawing,
+   footer 77px under it. The stage pins (::after spacer = the old 30vh hold)
+   and the footer slides up to it. */
 @media (min-width: 1024px) {
+  .ckl-pin--blueprint {
+    height: auto;
+  }
+  .ckl-pin--blueprint::after {
+    content: "";
+    display: block;
+    height: 30vh;
+  }
+  .ckl-pin--blueprint .ckl-pin__stage {
+    height: auto;
+  }
   .ckl-blueprint {
     display: grid;
-    grid-template-columns: minmax(0, 600fr) minmax(0, 860fr);
-    align-items: center;
-    gap: clamp(32px, 6vw, 110px);
+    grid-template-columns: minmax(0, 601fr) minmax(0, 784fr);
+    align-items: start;
+    gap: calc(100 * var(--ckl-u));
+    padding: calc(87 * var(--ckl-u)) calc(99 * var(--ckl-u)) 0 calc(86 * var(--ckl-u));
+  }
+  .ckl-blueprint__copy {
+    padding-top: calc(103 * var(--ckl-u));
+  }
+  .ckl-blueprint__copy .ckl-h1 {
+    width: max-content;
+  }
+  .ckl-blueprint__copy .ckl-copy {
+    margin-top: calc(20 * var(--ckl-u));
+    margin-left: calc(12 * var(--ckl-u));
   }
 }
 
@@ -1046,6 +1305,19 @@ body {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Desktop, matched to Figma: panel 66px from the sides and 77px under the
+   blueprint; wordmark 100px from the left / 112px from the right, directly
+   under the panel, 14px above the bottom of the page */
+@media (min-width: 1024px) {
+  .ckl-footer {
+    padding: calc(77 * var(--ckl-u)) calc(67 * var(--ckl-u)) calc(14 * var(--ckl-u))
+      calc(66 * var(--ckl-u));
+  }
+  .ckl-footer__wordmark {
+    padding: 0 calc(46 * var(--ckl-u)) 0 calc(34 * var(--ckl-u));
+  }
 }
 
 /* Respect reduced motion for the smooth-scroll buttons */

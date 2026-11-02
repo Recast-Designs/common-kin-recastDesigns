@@ -143,9 +143,9 @@ export default function ReviewsCarousel({ reviews, rating, reviewCount }) {
                 {review.text}
                 <span aria-hidden="true">”</span>
               </p>
-              <div className="flex flex-col gap-3">
+              <div className="ckl-review__by">
                 <p className="ckl-display ckl-h3">{review.name || "Verified buyer"}</p>
-                <div className="flex items-center gap-2">
+                <div className="ckl-review__rating">
                   <Stars value={review.rating ?? 5} />
                   {meta && <span className="ckl-meta">{meta}</span>}
                 </div>

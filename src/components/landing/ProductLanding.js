@@ -3,9 +3,11 @@
 import { useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import ScrubVideo from "./ScrubVideo";
+import ScrubGif from "./ScrubGif";
 import BlueprintReveal from "./BlueprintReveal";
 import ReviewsCarousel from "./ReviewsCarousel";
 import Stars from "./Stars";
+import { stickyProgress } from "./scroll";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_PRODUCT_IMAGE,
@@ -192,11 +194,11 @@ function BuyPanel({ product, reviews }) {
       {/* Buy panel */}
       <div className="ckl-hero__panel">
         <div className="ckl-hero__panel-inner">
-          <div className="flex flex-col gap-3">
-            <h1 className="ckl-display ckl-h3">{title}</h1>
+          <div className="ckl-buy__head">
+            <h1 className="ckl-display ckl-h3 ckl-buy__title">{title}</h1>
             <p className="ckl-display ckl-price">{moneyWithCode(priceOf(selected))}</p>
             {(rating > 0 || reviewCount > 0) && (
-              <div className="flex items-center gap-2">
+              <div className="ckl-buy__rating">
                 <Stars value={rating || 5} />
                 {reviewCount > 0 && (
                   <button type="button" onClick={scrollToReviews} className="ckl-meta ckl-link">
@@ -250,7 +252,7 @@ function BuyPanel({ product, reviews }) {
           )}
 
           {product.incenseOptions?.length > 0 && (
-            <div className="flex flex-col gap-2">
+            <div className="ckl-buy__incense flex flex-col gap-2">
               <p className="ckl-small">Incense</p>
               <div className="flex flex-wrap gap-2">
                 {product.incenseOptions.map((opt) => (
@@ -279,7 +281,7 @@ function BuyPanel({ product, reviews }) {
             </dl>
           )}
 
-          <p className="ckl-small">{product.safetyNote || DEFAULT_SAFETY_NOTE}</p>
+          <p className="ckl-small ckl-buy__note">{product.safetyNote || DEFAULT_SAFETY_NOTE}</p>
 
           <button
             type="button"
@@ -334,6 +336,7 @@ function IntroSection({ intro, video, poster }) {
             src={video}
             poster={poster}
             trackRef={trackRef}
+            progress={stickyProgress}
             className="ckl-video ckl-video--mirror"
             label="The incense holder lifting off and settling back down"
           />
@@ -348,18 +351,26 @@ function IntroSection({ intro, video, poster }) {
 }
 
 // ============================================================
-// SERENITY / MEDITATIVE / HUMAN — smoke video pinned on the left
-// The video plays through in the first 60% of the section (40% less
-// scrolling than before), then holds its last frame. Lower = faster.
+// SERENITY / MEDITATIVE / HUMAN — smoke animation pinned on the left
+// The animation is stretched over the whole section: it starts when
+// "Serenity" reaches the top and lands on its last frame exactly when
+// the "Human" section ends (the moment the pinned media scrolls away).
+// Lower SMOKE_VIDEO_END (e.g. 0.6) = finishes earlier and holds.
+// The default media is a GIF (/videos/second.gif); a .mp4 set from
+// Firestore (`landing.smokeVideo`) still uses the video scrubber.
 // ============================================================
-const SMOKE_VIDEO_END = 0.6;
+const SMOKE_VIDEO_END = 1;
+const isGif = (url) => typeof url === "string" && /\.gif(?:$|[?#])/i.test(url);
+
 function StoriesSection({ stories, video, poster }) {
   const trackRef = useRef(null);
+  const ScrubMedia = isGif(video) ? ScrubGif : ScrubVideo;
   return (
     <section ref={trackRef} className="ckl-stories">
       <div className="ckl-stories__media">
         <div className="ckl-stories__sticky">
-          <ScrubVideo
+          <ScrubMedia
+            key={video}
             src={video}
             poster={poster}
             trackRef={trackRef}

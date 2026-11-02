@@ -23,6 +23,20 @@ export function pinnedProgress(el) {
   return clamp((top - rect.top) / distance);
 }
 
+// Like pinnedProgress, for a wrapper whose sticky `.ckl-pin__stage` may be
+// taller than the screen (the desktop layout sizes the stage to its content
+// so the Figma spacing above and below is kept). Runs 0 → 1 over exactly the
+// scroll distance during which the stage stays pinned.
+export function stickyProgress(el) {
+  const stage = el.querySelector(".ckl-pin__stage");
+  if (!stage) return pinnedProgress(el);
+  const rect = el.getBoundingClientRect();
+  const top = headerOffset();
+  const distance = rect.height - Math.max(stage.offsetHeight, window.innerHeight - top);
+  if (distance <= 1) return pinnedProgress(el);
+  return clamp((top - rect.top) / distance);
+}
+
 // Calls `onFrame(element)` every animation frame while `ref` is on (or near)
 // the screen. If onFrame returns true it keeps running for one more frame even
 // off-screen (used to let eased values settle).
