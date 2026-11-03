@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { db } from "@/lib/firebase";
 import { StoreContext, useStore } from "@/lib/store";
 import ProductLanding from "@/components/landing/ProductLanding";
+import RevealText from "@/components/RevealText";
+import ParagraphReveal from "@/components/ParagraphReveal";
 import {
   addDoc,
   collection,
@@ -283,7 +285,7 @@ function HelpSection() {
   return (
     <section className="flex w-full flex-col items-center gap-4 bg-zinc-50 px-6 py-16 text-center sm:px-10">
       <h2 className="text-xl font-medium tracking-tight text-black">
-        Have questions? We&apos;re here to help.
+        <RevealText>Have questions? We&apos;re here to help.</RevealText>
       </h2>
       <p className="max-w-md text-sm text-zinc-600">
         Talk to a real person about sizing, materials, or building your
@@ -379,7 +381,7 @@ function Footer() {
         <div className="ckl-footer__grid">
           {columns.map((col) => (
             <div key={col.title} className="ckl-footer__col">
-              <p className="ckl-footer__title">{col.title}</p>
+              <p className="ckl-footer__title"><RevealText>{col.title}</RevealText></p>
               {col.links.map((link) => (
                 <a
                   key={link.href}
@@ -439,7 +441,7 @@ function CartDrawer() {
         className="relative flex h-full w-full max-w-md flex-col bg-white shadow-xl"
       >
         <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-5">
-          <h2 className="text-base font-medium text-black">Your Cart</h2>
+          <h2 className="text-base font-medium text-black"><RevealText>Your Cart</RevealText></h2>
           <button
             onClick={() => setCartOpen(false)}
             aria-label="Close"
@@ -724,9 +726,9 @@ function AccountView() {
       <main className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-12 sm:px-10 lg:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-1">
-            <p className="text-xs uppercase tracking-wide text-zinc-500">Account</p>
+            <p className="text-xs uppercase tracking-wide text-zinc-500"><RevealText>Account</RevealText></p>
             <h1 className="text-2xl font-medium tracking-tight text-black">
-              Welcome{user.displayName ? `, ${user.displayName}` : ""}
+              <RevealText>Welcome{user.displayName ? `, ${user.displayName}` : ""}</RevealText>
             </h1>
             <p className="text-sm text-zinc-600">{user.email}</p>
           </div>
@@ -739,12 +741,12 @@ function AccountView() {
         </div>
 
         <section className="flex flex-col gap-4">
-          <h2 className="text-base font-medium text-black">Order history</h2>
+          <h2 className="text-base font-medium text-black"><RevealText>Order history</RevealText></h2>
           <OrderHistory email={user.email} />
         </section>
 
         <section className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 text-sm text-zinc-600">
-          <p className="font-medium text-black">Need help with an order?</p>
+          <p className="font-medium text-black"><RevealText>Need help with an order?</RevealText></p>
           <p>
             Our concierge can help with delivery, returns and exchanges.{" "}
             <a href="#/contact" className="underline hover:text-black">
@@ -766,7 +768,7 @@ function AccountView() {
   return (
     <main className="mx-auto flex w-full max-w-md flex-col gap-8 px-6 py-12 sm:px-10 lg:py-16">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-medium tracking-tight text-black">{titles[mode]}</h1>
+        <h1 className="text-2xl font-medium tracking-tight text-black"><RevealText>{titles[mode]}</RevealText></h1>
         <p className="text-sm text-zinc-600">
           {mode === "reset"
             ? "Enter your email and we'll send you a link to set a new password."
@@ -900,9 +902,9 @@ function ContactView() {
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-12 sm:px-10 lg:flex-row lg:gap-16 lg:py-16">
       <div className="flex flex-1 flex-col gap-8">
         <div className="flex flex-col gap-2">
-          <p className="text-xs uppercase tracking-wide text-zinc-500">Live Concierge</p>
+          <p className="text-xs uppercase tracking-wide text-zinc-500"><RevealText>Live Concierge</RevealText></p>
           <h1 className="text-2xl font-medium tracking-tight text-black">
-            Talk to a real person
+            <RevealText>Talk to a real person</RevealText>
           </h1>
           <p className="max-w-lg text-sm leading-6 text-zinc-600">
             Questions about sizing, materials, an order, or building your
@@ -955,20 +957,20 @@ function ContactView() {
 
       <aside className="flex w-full flex-col gap-4 lg:max-w-sm">
         <div className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 text-sm">
-          <p className="font-medium text-black">Email</p>
+          <p className="font-medium text-black"><RevealText>Email</RevealText></p>
           <a href={`mailto:${CONTACT_EMAIL}`} className="break-all text-zinc-600 hover:text-black">
             {CONTACT_EMAIL}
           </a>
         </div>
         <div className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 text-sm">
-          <p className="font-medium text-black">Quick answers</p>
+          <p className="font-medium text-black"><RevealText>Quick answers</RevealText></p>
           <a href="#/faq" className="text-zinc-600 hover:text-black">Frequently asked questions</a>
           <a href="#/shipping" className="text-zinc-600 hover:text-black">Shipping policy</a>
           <a href="#/returns" className="text-zinc-600 hover:text-black">Returns &amp; exchanges</a>
           <a href="#/account" className="text-zinc-600 hover:text-black">Your orders</a>
         </div>
         <div className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 text-sm">
-          <p className="font-medium text-black">Trade &amp; wholesale</p>
+          <p className="font-medium text-black"><RevealText>Trade &amp; wholesale</RevealText></p>
           <a href="#/trade" className="text-zinc-600 hover:text-black">
             Studios, retailers and corporate gifting →
           </a>
@@ -983,8 +985,8 @@ function InfoPage({ eyebrow, title, intro, updated, children }) {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-12 sm:px-10 lg:py-16">
       <div className="flex flex-col gap-3">
-        {eyebrow && <p className="text-xs uppercase tracking-wide text-zinc-500">{eyebrow}</p>}
-        <h1 className="text-2xl font-medium tracking-tight text-black">{title}</h1>
+        {eyebrow && <p className="text-xs uppercase tracking-wide text-zinc-500"><RevealText>{eyebrow}</RevealText></p>}
+        <h1 className="text-2xl font-medium tracking-tight text-black"><RevealText>{title}</RevealText></h1>
         {intro && <p className="text-sm leading-6 text-zinc-600">{intro}</p>}
         {updated && <p className="text-xs text-zinc-400">Last updated {updated}</p>}
       </div>
@@ -996,7 +998,7 @@ function InfoPage({ eyebrow, title, intro, updated, children }) {
 function InfoSection({ id, title, children }) {
   return (
     <section id={id} className="flex scroll-mt-6 flex-col gap-3 border-t border-zinc-200 pt-8">
-      {title && <h2 className="text-base font-medium text-black">{title}</h2>}
+      {title && <h2 className="text-base font-medium text-black"><RevealText>{title}</RevealText></h2>}
       <div className="flex flex-col gap-3 text-sm leading-6 text-zinc-600">{children}</div>
     </section>
   );
@@ -1307,7 +1309,7 @@ function FaqView() {
       >
         {FAQS.map((group) => (
           <section key={group.group} className="flex flex-col gap-2 border-t border-zinc-200 pt-8">
-            <h2 className="mb-2 text-base font-medium text-black">{group.group}</h2>
+            <h2 className="mb-2 text-base font-medium text-black"><RevealText>{group.group}</RevealText></h2>
             {group.items.map((item) => (
               <details key={item.q} className="group rounded-md border border-zinc-200 px-4 py-3 text-sm">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-black">
@@ -1537,9 +1539,9 @@ function PrivacyView() {
 function NotFoundView() {
   return (
     <main className="mx-auto flex w-full max-w-xl flex-col items-center gap-4 px-6 py-24 text-center sm:px-10">
-      <p className="text-xs uppercase tracking-wide text-zinc-500">404</p>
+      <p className="text-xs uppercase tracking-wide text-zinc-500"><RevealText>404</RevealText></p>
       <h1 className="text-2xl font-medium tracking-tight text-black">
-        We couldn&apos;t find that page
+        <RevealText>We couldn&apos;t find that page</RevealText>
       </h1>
       <p className="text-sm text-zinc-600">
         The link may be broken or the page may have moved.
@@ -1692,7 +1694,7 @@ function PaymentComingSoon({ cart, customer, subtotal, shipping, total, onBack }
         <span className="w-fit rounded-full bg-black px-3 py-1 text-xs font-medium text-white">
           Coming soon
         </span>
-        <p className="text-base font-medium text-black">Online payment is coming soon</p>
+        <p className="text-base font-medium text-black"><RevealText>Online payment is coming soon</RevealText></p>
         <p className="leading-6 text-zinc-600">
           We&apos;re setting up secure card payments. To order now, send us your
           order by email — it&apos;s already filled in with your items and
@@ -2045,7 +2047,7 @@ function CheckoutView() {
           {cartIsEmpty && (
             <div className="flex flex-col items-start gap-4">
               <h1 className="text-2xl font-medium tracking-tight text-black">
-                Your cart is empty
+                <RevealText>Your cart is empty</RevealText>
               </h1>
               {orderError && <p className="text-sm text-red-600">{orderError}</p>}
               <p className="text-sm text-zinc-600">Add something to your cart to check out.</p>
@@ -2067,7 +2069,7 @@ function CheckoutView() {
             >
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-medium text-black">Contact</h2>
+                  <h2 className="text-base font-medium text-black"><RevealText>Contact</RevealText></h2>
                   <a href="#/account" className="text-xs text-zinc-600 underline hover:text-black">
                     Sign in
                   </a>
@@ -2083,7 +2085,7 @@ function CheckoutView() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <h2 className="text-base font-medium text-black">Delivery</h2>
+                <h2 className="text-base font-medium text-black"><RevealText>Delivery</RevealText></h2>
                 <select
                   aria-label="Country/Region"
                   value={order.country}
@@ -2173,7 +2175,7 @@ function CheckoutView() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <h2 className="text-base font-medium text-black">Shipping method</h2>
+                <h2 className="text-base font-medium text-black"><RevealText>Shipping method</RevealText></h2>
                 <div className="flex items-center justify-between rounded-md border border-black bg-zinc-50 px-4 py-3 text-sm">
                   <span>Standard Shipping</span>
                   <span className="font-medium text-black">
@@ -2254,7 +2256,7 @@ function CheckoutView() {
               {/* Stripe Payment Element */}
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-1">
-                  <h2 className="text-base font-medium text-black">Payment</h2>
+                  <h2 className="text-base font-medium text-black"><RevealText>Payment</RevealText></h2>
                   {ONLINE_PAYMENTS_ENABLED && (
                     <p className="text-xs text-zinc-500">
                       All transactions are secure and encrypted.
@@ -2299,7 +2301,7 @@ function CheckoutView() {
                     : "Order confirmed"}
                 </p>
                 <h1 className="text-2xl font-medium tracking-tight text-black">
-                  Thank you, {confirmedOrder.customer?.fullName}
+                  <RevealText>Thank you, {confirmedOrder.customer?.fullName}</RevealText>
                 </h1>
                 <p className="text-sm text-zinc-500">
                   Confirmation #{String(confirmedOrder.id).slice(0, 8).toUpperCase()}
@@ -2307,13 +2309,13 @@ function CheckoutView() {
               </div>
 
               <div className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 text-sm">
-                <p className="font-medium text-black">Contact information</p>
+                <p className="font-medium text-black"><RevealText>Contact information</RevealText></p>
                 <p className="text-zinc-600">{confirmedOrder.customer?.email}</p>
                 <p className="text-zinc-600">{confirmedOrder.customer?.phone}</p>
               </div>
 
               <div className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 text-sm">
-                <p className="font-medium text-black">Shipping address</p>
+                <p className="font-medium text-black"><RevealText>Shipping address</RevealText></p>
                 <p className="text-zinc-600">
                   {confirmedOrder.customer?.address}
                   {confirmedOrder.customer?.apartment
@@ -2330,14 +2332,14 @@ function CheckoutView() {
               </div>
 
               <div className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 text-sm">
-                <p className="font-medium text-black">Shipping method</p>
+                <p className="font-medium text-black"><RevealText>Shipping method</RevealText></p>
                 <p className="text-zinc-600">
                   Standard Shipping · {shippingLabel(confirmedOrder.shipping || 0)}
                 </p>
               </div>
 
               <div className="flex flex-col gap-2 rounded-md bg-zinc-50 p-4 text-sm">
-                <p className="font-medium text-black">Payment</p>
+                <p className="font-medium text-black"><RevealText>Payment</RevealText></p>
                 <p className="text-zinc-600">
                   Card ·{" "}
                   {confirmedOrder.paymentStatus === "processing" ? "Processing" : "Paid"}{" "}
@@ -2648,6 +2650,8 @@ export default function Home() {
       {/* Applies the saved/system theme before first paint, then styles for dark mode */}
       <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       <style dangerouslySetInnerHTML={{ __html: THEME_CSS }} />
+      {/* Paragraphs fade in as they scroll into view */}
+      <ParagraphReveal />
 
       {route.page === "checkout" ? (
         <CheckoutView />

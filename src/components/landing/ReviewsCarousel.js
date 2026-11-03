@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Stars from "./Stars";
+import RevealText from "@/components/RevealText";
 
 function formatReviewDate(value) {
   if (!value) return "";
@@ -90,7 +91,7 @@ export default function ReviewsCarousel({ reviews, rating, reviewCount }) {
     <section id="reviews" className="ckl-section ckl-reviews" aria-label="Customer reviews">
       <div className="ckl-reviews__head">
         <div className="flex flex-col gap-2">
-          <h2 className="ckl-display ckl-h3">Reviews</h2>
+          <h2 className="ckl-display ckl-h3"><RevealText>Reviews</RevealText></h2>
           <div className="flex items-center gap-2">
             <Stars value={rating || 5} />
             <span className="ckl-meta">
@@ -144,7 +145,7 @@ export default function ReviewsCarousel({ reviews, rating, reviewCount }) {
                 <span aria-hidden="true">”</span>
               </p>
               <div className="ckl-review__by">
-                <p className="ckl-display ckl-h3">{review.name || "Verified buyer"}</p>
+                <p className="ckl-display ckl-h3"><RevealText>{review.name || "Verified buyer"}</RevealText></p>
                 <div className="ckl-review__rating">
                   <Stars value={review.rating ?? 5} />
                   {meta && <span className="ckl-meta">{meta}</span>}

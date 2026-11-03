@@ -8,6 +8,8 @@ import BlueprintReveal from "./BlueprintReveal";
 import ReviewsCarousel from "./ReviewsCarousel";
 import Stars from "./Stars";
 import { stickyProgress } from "./scroll";
+import ParallaxImage, { useHeroParallax } from "./parallax";
+import RevealText from "@/components/RevealText";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_PRODUCT_IMAGE,
@@ -121,6 +123,8 @@ function BuyPanel({ product, reviews }) {
   const [incense, setIncense] = useState(product.incenseOptions?.[0] ?? null);
   const [activeImage, setActiveImage] = useState(0);
   const [added, setAdded] = useState(false);
+  const galleryRef = useRef(null);
+  useHeroParallax(galleryRef);
 
   // Keep the selection valid if the document changes while the page is open
   const selected =
@@ -162,7 +166,7 @@ function BuyPanel({ product, reviews }) {
   return (
     <section className="ckl-hero" aria-label={title}>
       {/* Gallery */}
-      <div className="ckl-hero__gallery">
+      <div ref={galleryRef} className="ckl-hero__gallery">
         {mainImage?.src && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -195,7 +199,7 @@ function BuyPanel({ product, reviews }) {
       <div className="ckl-hero__panel">
         <div className="ckl-hero__panel-inner">
           <div className="ckl-buy__head">
-            <h1 className="ckl-display ckl-h3 ckl-buy__title">{title}</h1>
+            <h1 className="ckl-display ckl-h3 ckl-buy__title"><RevealText>{title}</RevealText></h1>
             <p className="ckl-display ckl-price">{moneyWithCode(priceOf(selected))}</p>
             {(rating > 0 || reviewCount > 0) && (
               <div className="ckl-buy__rating">
@@ -253,7 +257,7 @@ function BuyPanel({ product, reviews }) {
 
           {product.incenseOptions?.length > 0 && (
             <div className="ckl-buy__incense flex flex-col gap-2">
-              <p className="ckl-small">Incense</p>
+              <p className="ckl-small"><RevealText>Incense</RevealText></p>
               <div className="flex flex-wrap gap-2">
                 {product.incenseOptions.map((opt) => (
                   <button
@@ -342,7 +346,7 @@ function IntroSection({ intro, video, poster }) {
           />
         </div>
         <div className="ckl-intro__copy">
-          <h2 className="ckl-display ckl-h1">{intro.title}</h2>
+          <h2 className="ckl-display ckl-h1"><RevealText>{intro.title}</RevealText></h2>
           <p className="ckl-copy">{intro.text}</p>
         </div>
       </div>
@@ -389,12 +393,16 @@ function StoriesSection({ stories, video, poster }) {
               {images.length > 0 && (
                 <div className={`ckl-story__images ckl-story__images--${images.length}`}>
                   {images.map((img, j) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img key={`${img.src}-${j}`} src={img.src} alt={img.alt || ""} loading="lazy" />
+                    <ParallaxImage
+                      key={`${img.src}-${j}`}
+                      src={img.src}
+                      alt={img.alt || ""}
+                      className="ckl-story__frame"
+                    />
                   ))}
                 </div>
               )}
-              <h2 className="ckl-display ckl-h1 ckl-right">{story.title}</h2>
+              <h2 className="ckl-display ckl-h1 ckl-right"><RevealText>{story.title}</RevealText></h2>
               <p className="ckl-copy ckl-right">{story.text}</p>
             </article>
           );
@@ -411,11 +419,15 @@ function OriginSection({ origin }) {
   return (
     <section className="ckl-section ckl-origin">
       {origin.image && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={origin.image} alt={origin.imageAlt || ""} loading="lazy" className="ckl-origin__image" />
+        <ParallaxImage
+          variant="float"
+          src={origin.image}
+          alt={origin.imageAlt || ""}
+          className="ckl-origin__image"
+        />
       )}
       <div className="ckl-origin__copy">
-        <h2 className="ckl-display ckl-h1 ckl-right">{origin.title}</h2>
+        <h2 className="ckl-display ckl-h1 ckl-right"><RevealText>{origin.title}</RevealText></h2>
         <p className="ckl-copy ckl-right">{origin.text}</p>
       </div>
     </section>
@@ -430,7 +442,7 @@ function BlueprintSection({ blueprint }) {
     <section className="ckl-pin ckl-pin--blueprint">
       <div className="ckl-pin__stage ckl-blueprint">
         <div className="ckl-blueprint__copy">
-          <h2 className="ckl-display ckl-h1">{blueprint.title}</h2>
+          <h2 className="ckl-display ckl-h1"><RevealText>{blueprint.title}</RevealText></h2>
           <p className="ckl-copy">{blueprint.text}</p>
         </div>
         <div className="ckl-blueprint__art">

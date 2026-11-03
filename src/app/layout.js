@@ -20,6 +20,9 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
+      // The theme and paragraph-fade scripts add classes to <html> before
+      // React loads (to avoid a flash), so its className differs on purpose
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

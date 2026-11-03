@@ -300,6 +300,11 @@ body {
   width: 100%;
   object-fit: cover;
   object-position: center;
+  /* Parallax: --ckl-hero-p goes 0 → 1 as the gallery scrolls away
+     (set by useHeroParallax); at the top of the page it's untouched */
+  transform: translate3d(0, calc(var(--ckl-hero-p, 0) * 6%), 0)
+    scale(calc(1 + var(--ckl-hero-p, 0) * 0.14));
+  will-change: transform;
 }
 
 .ckl-hero__thumbs {
@@ -756,11 +761,9 @@ body {
   margin-bottom: clamp(24px, 2.6vw, 44px);
 }
 
-.ckl-story__images img {
+.ckl-story__images .ckl-story__frame {
   display: block;
-  height: auto;
   width: 100%;
-  object-fit: cover;
 }
 
 /* Big headings may run past their column (over the video), as in the design */
@@ -772,7 +775,7 @@ body {
   margin-left: 0;
 }
 
-.ckl-story__images--1 img {
+.ckl-story__images--1 .ckl-story__frame {
   aspect-ratio: 590 / 542;
 }
 
@@ -780,10 +783,10 @@ body {
   grid-template-columns: 1fr 1fr;
   align-items: start;
 }
-.ckl-story__images--2 img {
+.ckl-story__images--2 .ckl-story__frame {
   aspect-ratio: 325 / 600;
 }
-.ckl-story__images--2 img:nth-child(2) {
+.ckl-story__images--2 .ckl-story__frame:nth-child(2) {
   margin-top: clamp(40px, 6.6vw, 110px);
 }
 
@@ -841,7 +844,7 @@ body {
     width: min(62%, 440px);
     gap: 10px;
   }
-  .ckl-story__images--2 img:nth-child(2) {
+  .ckl-story__images--2 .ckl-story__frame:nth-child(2) {
     margin-top: 12%;
   }
 }
@@ -865,12 +868,31 @@ body {
   }
   /* Portrait video: as tall as the screen, centred in the left column */
   .ckl-stories__sticky .ckl-video {
+  --ckl-smoke-scale: 1.8;        /* 1.25 = 25% bigger */
   height: 100%;
   width: 100%;
   object-fit: contain;
   object-position: 50% 50%;
-  transform: scale(1.80);        /* 1.25 = 25% bigger */
+  transform: scale(var(--ckl-smoke-scale));
   transform-origin: 50% 100%;    /* grows upward, the holder stays at the bottom */
+  /* The enlarged smoke rises past the top of its column, where the header
+     used to slice it off in a hard line. Instead it now thins out and
+     dissolves softly before it gets there, like real smoke. The fade starts
+     exactly at the top of the visible column (whatever the scale above)
+     and is fully solid again ~30% of the way down the screen. */
+  --ckl-smoke-top: calc(100% - 100% / var(--ckl-smoke-scale));
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent var(--ckl-smoke-top),
+    rgba(0, 0, 0, 0.35) calc(var(--ckl-smoke-top) + 7%),
+    #000 calc(var(--ckl-smoke-top) + 17%)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent var(--ckl-smoke-top),
+    rgba(0, 0, 0, 0.35) calc(var(--ckl-smoke-top) + 7%),
+    #000 calc(var(--ckl-smoke-top) + 17%)
+  );
 }
   /* Text column: headings & photos end 82px from the right edge, body
      copy 94px; the first heading starts 16px below the top of the smoke */
@@ -923,7 +945,7 @@ body {
     gap: calc(15 * var(--ckl-u));
     margin-bottom: calc(22 * var(--ckl-u));
   }
-  .ckl-story__images--2 img:nth-child(2) {
+  .ckl-story__images--2 .ckl-story__frame:nth-child(2) {
     aspect-ratio: 318 / 568;
     margin-top: calc(110 * var(--ckl-u));
   }
@@ -1320,9 +1342,161 @@ body {
   }
 }
 
-/* Respect reduced motion for the smooth-scroll buttons */
+/* ============================================================
+   PARALLAX IMAGES (components/landing/parallax.js)
+   ============================================================ */
+/* Framed photos: the photo drifts against the scroll inside its crop and
+   settles out of a slight zoom as it comes up the screen */
+.ckl-px {
+  position: relative;
+  overflow: hidden;
+  background: var(--ckl-gallery);
+  isolation: isolate;
+}
+.ckl-px__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transform: translate3d(0, var(--ckl-px-y, 0%), 0) scale(var(--ckl-px-s, 1.16));
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Floating cut-outs (the boxed product photo): the whole image moves
+   slower than the page */
+.ckl-float {
+  transform: translate3d(0, var(--ckl-float-y, 0px), 0);
+  will-change: transform;
+}
+
+/* ============================================================
+   HEADING REVEAL (components/RevealText.js)
+   Letters rise out of an invisible baseline, staggered left → right,
+   then a light sheen glides across them every few seconds.
+   ============================================================ */
+.ckl-rt__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* Each word is its own mask (clip-path keeps the text baseline intact);
+   the extra room around it stops glyph edges being cut at rest — the
+   bottom allowance is deep enough for the descenders of g, y, p, j, q */
+.ckl-rt__word {
+  display: inline-block;
+  white-space: nowrap;
+  clip-path: inset(-0.35em -0.15em -0.5em -0.15em);
+}
+.ckl-rt__char {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 180%, 0);
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+
+/* Landed: letters at rest, sheen sweeps across them in sequence */
+.ckl-rt.is-landed .ckl-rt__char {
+  animation: ckl-rt-sheen 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation-delay: calc(0.35s + var(--i, 0) * 45ms);
+}
+.ckl-rt.is-landed:hover .ckl-rt__char {
+  animation: ckl-rt-sheen-hover 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation-delay: calc(var(--i, 0) * 30ms);
+}
+.ckl-rt.is-static .ckl-rt__char {
+  animation: none;
+}
+
+@keyframes ckl-rt-sheen {
+  0%,
+  8%,
+  100% {
+    color: currentColor;
+  }
+  4% {
+    color: color-mix(in srgb, currentColor 30%, #ffffff);
+  }
+}
+@keyframes ckl-rt-sheen-hover {
+  0%,
+  40%,
+  100% {
+    color: currentColor;
+  }
+  20% {
+    color: color-mix(in srgb, currentColor 30%, #ffffff);
+  }
+}
+
+/* ============================================================
+   PARAGRAPH FADE-IN (components/ParagraphReveal.js)
+   Opacity 0 → 1, slow and soft, after a short delay — every time a
+   paragraph scrolls into view (down or up). Paragraphs revealed together
+   are staggered by data-ckl-in (0 = first, 5 = sixth and later).
+   To tune: the fade length is the 2s below, the start delay is 0.5s,
+   and each following paragraph waits 0.25s longer.
+   ============================================================ */
+/* Hidden / reset state — happens off screen, so no visible fade-out */
+.ckl-p-ready p {
+  transition: opacity 0.2s linear;
+}
+.ckl-p-ready p:not([data-ckl-in]):not(.ckl-footer__title):not(.text-red-600):not(.text-emerald-700):not(.ckl-error) {
+  opacity: 0;
+}
+/* Fading in */
+.ckl-p-ready p[data-ckl-in] {
+  transition: opacity 2s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition-delay: 0.5s;
+}
+.ckl-p-ready p[data-ckl-in="1"] {
+  transition-delay: 0.75s;
+}
+.ckl-p-ready p[data-ckl-in="2"] {
+  transition-delay: 1s;
+}
+.ckl-p-ready p[data-ckl-in="3"] {
+  transition-delay: 1.25s;
+}
+.ckl-p-ready p[data-ckl-in="4"] {
+  transition-delay: 1.5s;
+}
+.ckl-p-ready p[data-ckl-in="5"] {
+  transition-delay: 1.75s;
+}
+.ckl-p-ready p[data-ckl-in="skip"] {
+  transition: none;
+}
+
+/* Respect reduced motion: smooth-scroll buttons, parallax, the heading
+   reveal and the paragraph fade all fall back to the static design */
 @media (prefers-reduced-motion: reduce) {
   .ckl-reviews__track {
     scroll-behavior: auto;
+  }
+  .ckl-hero__image,
+  .ckl-float {
+    transform: none;
+  }
+  .ckl-px__img {
+    transform: scale(1.001);
+  }
+  .ckl-rt__char {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .ckl-p-ready p {
+    opacity: 1;
+    transition: none;
   }
 }
